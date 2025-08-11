@@ -4,6 +4,7 @@ const {
 const { Model, Sequelize, DataTypes } = require("sequelize");
 
 module.exports = {
+  // Pada fungsi addPengajuan
   addPengajuan: async (req, res) => {
     try {
       const {
@@ -26,12 +27,26 @@ module.exports = {
         tujuanPembiayaan,
         jaminan,
         accPermohonan,
-        nomorAkad,
         status,
         statusBy,
         statusAt,
         foto,
       } = req.body;
+
+      // Cek jika accPermohonan minus, set status menjadi "0"
+      const finalStatus = accPermohonan < 0 ? "0" : status;
+
+      // Generate nomorAkad otomatis
+      const tahunSekarang = new Date().getFullYear();
+      const jumlahPengajuanTahunIni = await pengajuan.count({
+        where: Sequelize.where(
+          Sequelize.fn("YEAR", Sequelize.col("createdAt")),
+          tahunSekarang
+        ),
+      });
+      const nomorUrut = 1000 + jumlahPengajuanTahunIni;
+      const nomorAkad = `PG/${tahunSekarang}/${nomorUrut}`;
+
       const add = await pengajuan.create({
         rekening,
         namaNasabah,
@@ -53,17 +68,21 @@ module.exports = {
         jaminan,
         accPermohonan,
         nomorAkad,
-        status,
+        status: finalStatus, // Gunakan finalStatus di sini
         statusBy,
         statusAt,
         foto,
       });
 
-      res.json(add);
+      res.status(201).json({
+        message: "Pengajuan created successfully",
+        data: add,
+      });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: "Error adding pengajuan", error: error.message });
+      res.status(500).json({
+        message: "Error adding pengajuan",
+        error: error.message,
+      });
     }
   },
 

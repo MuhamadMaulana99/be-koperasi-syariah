@@ -45,7 +45,7 @@ module.exports = {
         ),
       });
       const nomorUrut = 1000 + jumlahPengajuanTahunIni;
-      const nomorAkad = `PG/${tahunSekarang}/${nomorUrut}`;
+      const nomorAkad = `BMI/${tahunSekarang}/${nomorUrut}`;
 
       const add = await pengajuan.create({
         rekening,

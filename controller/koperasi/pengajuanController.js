@@ -34,7 +34,7 @@ module.exports = {
       } = req.body;
 
       // Cek jika accPermohonan minus, set status menjadi "0"
-      const finalStatus = accPermohonan < 0 ? "0" : status;
+      const finalStatus = accPermohonan < 0 ? "0" : "1";
 
       // Generate nomorAkad otomatis
       const tahunSekarang = new Date().getFullYear();
